@@ -1,6 +1,5 @@
 /linters/.tox/
 /linters/.mypy_cache/
-/config.mk
 __pycache__/
 *.swp
 *.swo

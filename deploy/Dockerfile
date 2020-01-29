@@ -25,12 +25,4 @@ RUN pip install -r /root/requirements.txt
 
 COPY server.py /root/server.py
 
-CMD /root/server.py \
-	--http-port "$HTTP_HOST" \
-	--http-port "$HTTP_PORT" \
-	--db-host "$DB_HOST" \
-	--db-port "$DB_PORT" \
-	--db-user "$DB_USER" \
-	--db-passwd "$DB_PASSWD" \
-	--db-name "$DB_NAME" \
-	--auth-query "$AUTH_QUERY"
+CMD /bin/bash

@@ -1,15 +1,3 @@
--include config.mk
-
-HTTP_HOST ?= localhost
-HTTP_PORT ?= 8080
-
-DB_HOST ?= localhost
-DB_PORT ?= 3306
-DB_USER ?=
-DB_PASSWD ?=
-DB_NAME ?= change_me
-AUTH_QUERY ?= SELECT 1 FROM users WHERE user = %%(user)s AND passwd = %%(passwd)s AND secret = %%(secret)s
-
 IMAGE ?= kvmd-auth-server
 
 
@@ -35,15 +23,8 @@ tox: build
 run: build
 	docker run --rm \
 			--net host \
-			--env HTTP_HOST="$(HTTP_HOST)" \
-			--env HTTP_PORT="$(HTTP_PORT)" \
-			--env DB_HOST="$(DB_HOST)" \
-			--env DB_PORT="$(DB_PORT)" \
-			--env DB_USER="$(DB_USER)" \
-			--env DB_PASSWD="$(DB_PASSWD)" \
-			--env DB_NAME="$(DB_NAME)" \
-			--env AUTH_QUERY="$(AUTH_QUERY)" \
-		-it $(IMAGE) $(if $(CMD),$(CMD),/root/server.py)
+			--volume `pwd`/config.yaml:/root/config.yaml:ro \
+		-it $(IMAGE) $(if $(CMD),$(CMD),/root/server.py --config /root/config.yaml)
 
 
 build:

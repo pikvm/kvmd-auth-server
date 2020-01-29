@@ -75,9 +75,17 @@ def _exposed(http_method: str, path: str) -> Callable:
 
 
 class _Server:
-    def __init__(self, auth_query: str, db_params: Dict[str, Any]) -> None:
+    def __init__(
+        self,
+        ping_query: str,
+        auth_query: str,
+        db_params: Dict[str, Any],
+    ) -> None:
+
+        self.__ping_query = ping_query
         self.__auth_query = auth_query
         self.__db_params = db_params
+
         self.__db_pool: Optional[aiomysql.Pool] = None
 
     def make_app(self) -> aiohttp.web.Application:
@@ -111,7 +119,7 @@ class _Server:
     @_exposed("GET", "/ping")
     async def __ping_handler(self, _: aiohttp.web.Request) -> aiohttp.web.Response:
         async with self.__ensure_db_cursor() as cursor:
-            await cursor.execute("SELECT version()")
+            await cursor.execute(self.__ping_query)
             await cursor.fetchone()
         return _make_response("OK")
 
@@ -147,56 +155,29 @@ class _Server:
 # =====
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--http-host", default="localhost")
-    parser.add_argument("--http-port", default=8080, type=int)
-    parser.add_argument("--db-host", default="localhost")
-    parser.add_argument("--db-port", default=3306, type=int)
-    parser.add_argument("--db-user", default="")
-    parser.add_argument("--db-passwd", default="")
-    parser.add_argument("--db-name", default="change_me")
-    parser.add_argument("--auth-query", default="SELECT 1 FROM users WHERE user = %(user)s AND passwd = %(passwd)s AND secret = %(secret)s")
-    parser.add_argument("-d", "--debug", action="store_const", const="DEBUG", dest="log_level")
-    parser.set_defaults(log_level="INFO")
-
+    parser.add_argument("-c", "--config", default="config.yaml")
     options = parser.parse_args()
 
+    with open(options.config) as config_file:
+        config = yaml.safe_load(config_file)
+
     logging.captureWarnings(True)
-    logging.config.dictConfig(yaml.safe_load(f"""
-        version: 1
-        disable_existing_loggers: false
-
-        formatters:
-            console:
-                (): logging.Formatter
-                style: "{{"
-                format: "{{asctime}} {{name:30.30}} {{levelname:>7}} --- {{message}}"
-
-        handlers:
-            console:
-                level: DEBUG
-                class: logging.StreamHandler
-                stream: ext://sys.stdout
-                formatter: console
-
-        root:
-            level: {options.log_level}
-            handlers:
-                - console
-    """))
+    logging.config.dictConfig(config["logging"])
 
     aiohttp.web.run_app(
         app=_Server(
-            auth_query=options.auth_query,
+            ping_query=config["query"]["ping"],
+            auth_query=config["query"]["auth"],
             db_params={
-                "host": options.db_host,
-                "port": options.db_port,
-                "user": (options.db_user or None),
-                "password": options.db_passwd,
-                "db": options.db_name,
+                "host": config["db"]["host"],
+                "port": config["db"]["port"],
+                "user": (config["db"]["user"] or None),
+                "password": config["db"]["passwd"],
+                "db": config["db"]["name"],
             },
         ).make_app(),
-        host=options.http_host,
-        port=options.http_port,
+        host=config["server"]["host"],
+        port=config["server"]["port"],
     )
 
 
