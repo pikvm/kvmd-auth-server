@@ -47,13 +47,19 @@ CREATE TABLE kvm_users (
     ```
 
 4. Clone this repo to your server:
-    ```
+    ```bash
     $ git clone https://github.com/pikvm/kvmd-auth-server
     ```
 
 5. Edit `config.yaml`. Set DB and auth server params. It will listen `server.host` and `server.port` for upcoming requests from Pi-KVM devices.
 
-6. Edit `/etc/kvmd/auth.yaml` on your Pi-KVM:
+6. Run and run server:
+    ```bash
+    $ make build
+    $ make run
+    ```
+
+6. Edit `/etc/kvmd/auth.yaml` on your Pi-KVM and reboot it:
     ```yaml
     internal:
         force_users: admin
