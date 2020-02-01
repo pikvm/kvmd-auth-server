@@ -5,13 +5,13 @@ server:
 db:
     host: localhost
     port: 3306
-    user: user
+    user: kvmauth
     passwd: pass
-    name: pikvm
+    name: kvm_users
 
 query:
     ping: "SELECT version()"
-    auth: "SELECT 1 FROM kvm_users WHERE username = %(user)s AND password = %(passwd)s AND kvmid = %(secret)s"
+    auth: "SELECT 1 FROM kvm_users WHERE user = %(user)s AND passwd = %(passwd)s AND kvm_id = %(secret)s"
 
 logging:
     version: 1
