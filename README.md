@@ -69,7 +69,7 @@ CREATE TABLE kvm_users (
         secret: 12345  # KVM ID
     ````
 
-    The `admin` user will be checked through local KVM auth in case the auth server is unavailable. any other users will only be logged in through the server.
+    The `admin` user will be checked through local KVM auth. Any other users will only be logged in through the auth server.
     
 -----
 # License
