@@ -62,10 +62,10 @@ def _exposed(http_method: str, path: str) -> Callable:
             try:
                 return (await handler(self, request))
             except BadRequestError as err:
-                return _make_response(f"BAD REQUEST: {str(err)}", 400)
+                return _make_response(f"BAD REQUEST: {err}", 400)
             except Exception as err:
                 _logger.exception("Unhandled API exception")
-                return _make_response(f"SERVER ERROR: {type(err).__name__}: {str(err)}", 500)
+                return _make_response(f"SERVER ERROR: {type(err).__name__}: {err}", 500)
 
         setattr(wrapper, _ATTR_EXPOSED, True)
         setattr(wrapper, _ATTR_EXPOSED_METHOD, http_method)
@@ -140,7 +140,7 @@ class _Server:
         try:
             return (await request.json())
         except Exception as err:
-            raise BadRequestError(f"Can't parse JSON request: {str(err)}")
+            raise BadRequestError(f"Can't parse JSON request: {err}")
 
     def __get_credential(self, data: Dict, key: str) -> aiohttp.web.Response:
         value: Any = data.get(key)

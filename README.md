@@ -1,4 +1,7 @@
-# kvmd-auth-server
+# KVMD-Auth-Server
+[![CI](https://github.com/pikvm/kvmd-auth-server/workflows/CI/badge.svg)](https://github.com/pikvm/kvmd-auth-server/actions?query=workflow%3ACI)
+[![Discord](https://img.shields.io/discord/580094191938437144?logo=discord)](https://discord.gg/bpmXfz5)
+
 This repository demonstrates the ability to organize a centralized HTTP authorization server for Pi-KVM with a single user database.
 It's assumed that you already have a MySQL server that used to store user's credentials.
 Please note that passwords are stored in plain text. In addition, passwords are transmitted over the network over HTTP, not HTTPS.
