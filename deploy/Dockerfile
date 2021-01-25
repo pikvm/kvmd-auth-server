@@ -1,4 +1,4 @@
-FROM archlinux/base
+FROM archlinux/archlinux
 MAINTAINER Devaev Maxim <mdevaev@gmail.com>
 
 RUN pacman --noconfirm -Syy \
@@ -18,7 +18,8 @@ RUN pacman --noconfirm -Syy \
 		python \
 		python-pip \
 		python-tox \
-	&& (pacman --noconfirm -Sc || true)
+	&& (pacman --noconfirm -Sc || true) \
+	&& rm -rf /var/cache/pacman/pkg/*
 
 COPY deploy/requirements.txt /root/requirements.txt
 RUN pip install -r /root/requirements.txt
