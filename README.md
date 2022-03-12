@@ -25,6 +25,8 @@ in the settings (for example `http://kvmauth/auth`):
 This request contains the name of the user who wants to log in to Pi-KVM, his password, and a "secret" that appears in KVMD config.
 In our case, it's used as a KVM ID in the network. Based on this secret, the server will decide whether the user is allowed access to a specific KVM.
 
+❗NOTE: Usernames needs to adhere to [a-zA-Z] as a starting character otherwise it will fail ❗
+
 If the auth server responds with `200 OK`, KVMD will allow the user to log in.
 For other response codes, the login will be denied.
 
