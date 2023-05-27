@@ -1,18 +1,10 @@
-FROM archlinux/archlinux
+FROM archlinux/archlinux:base
 MAINTAINER Devaev Maxim <mdevaev@gmail.com>
 
-RUN pacman --noconfirm -Syy \
-	&& pacman --needed --noconfirm -S \
-		glibc \
-		pacman \
-	&& pacman-db-upgrade \
-	&& pacman --noconfirm -Syu \
-	&& pacman --needed --noconfirm -S \
-		p11-kit \
-		archlinux-keyring \
-		ca-certificates \
-		ca-certificates-mozilla \
-		ca-certificates-utils \
+RUN mkdir -p /etc/pacman.d/hooks \
+	&& ln -s /dev/null /etc/pacman.d/hooks/30-systemd-tmpfiles.hook
+
+RUN pacman --noconfirm -Syu \
 	&& pacman --needed --noconfirm -S \
 		git \
 		python \
